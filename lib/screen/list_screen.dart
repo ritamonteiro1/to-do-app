@@ -71,7 +71,7 @@ class _ListScreenState extends State<ListScreen> {
                                 suffix: listStore.isFormValid
                                     ? IconButton(
                                         icon: Icon(Icons.add),
-                                        onPressed: () {},
+                                        onPressed: listStore.addToDoList,
                                       )
                                     : null,
                                 obscure: false,

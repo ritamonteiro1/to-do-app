@@ -13,7 +13,7 @@ abstract class _ListStore with Store {
   @computed
   bool get isFormValid => newToDoTitle.isNotEmpty;
 
-  var toDoList = ObservableList<String>();
+  ObservableList<String> toDoList = ObservableList<String>();
 
   @action
   void addToDoList() {
