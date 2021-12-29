@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:to_do_app/store/list_store.dart';
+import 'package:provider/provider.dart';
+import 'package:to_do_app/store/list/list_store.dart';
+import 'package:to_do_app/store/login/login_store.dart';
 import 'package:to_do_app/widget/custom_text_field.dart';
 import 'package:to_do_app/screen/login_screen.dart';
 
@@ -13,6 +15,7 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   late ListStore listStore;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -46,6 +49,8 @@ class _ListScreenState extends State<ListScreen> {
                       icon: Icon(Icons.exit_to_app),
                       color: Colors.black,
                       onPressed: () {
+                        Provider.of<LoginStore>(context, listen: false)
+                            .logOut();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => LoginScreen()));
                       },
@@ -65,13 +70,16 @@ class _ListScreenState extends State<ListScreen> {
                         Observer(
                           builder: (_) {
                             return CustomTextField(
-                                controller: null,
+                                controller: textEditingController,
                                 hint: 'Tarefa',
                                 prefix: null,
                                 suffix: listStore.isFormValid
                                     ? IconButton(
                                         icon: Icon(Icons.add),
-                                        onPressed: listStore.addToDoList,
+                                        onPressed: () {
+                                          listStore.addToDoList();
+                                          textEditingController.clear();
+                                        },
                                       )
                                     : null,
                                 obscure: false,
@@ -88,9 +96,23 @@ class _ListScreenState extends State<ListScreen> {
                             builder: (_) {
                               return ListView.separated(
                                   itemBuilder: (_, index) {
-                                    return ListTile(
-                                      title: Text(listStore.toDoList[index]),
-                                      onTap: () {},
+                                    final toDo = listStore.toDoList[index];
+                                    return Observer(
+                                      builder: (_) {
+                                        return ListTile(
+                                          title: Text(
+                                            toDo.title,
+                                            style: TextStyle(
+                                                decoration: toDo.done
+                                                    ? TextDecoration.lineThrough
+                                                    : null,
+                                                color: toDo.done
+                                                    ? Colors.grey
+                                                    : Colors.black),
+                                          ),
+                                          onTap: toDo.toggleDone,
+                                        );
+                                      },
                                     );
                                   },
                                   separatorBuilder: (_, __) {

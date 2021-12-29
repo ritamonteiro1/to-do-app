@@ -35,6 +35,8 @@ abstract class _LoginStore with Store {
     await Future.delayed(Duration(seconds: 2));
     loading = false;
     loggedIn = true;
+    email = '';
+    password = '';
   }
 
   @computed
@@ -49,4 +51,9 @@ abstract class _LoginStore with Store {
 
   @computed
   bool get isFormValid => isEmailValid && isPasswordValid;
+
+  @action
+  void logOut() {
+    loggedIn = false;
+  }
 }
