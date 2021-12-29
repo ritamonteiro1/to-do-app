@@ -1,0 +1,1 @@
+Aplicando MobX para gerenciamento de estado com base no curso Aprenda MobX na Prática do Startto
