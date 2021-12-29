@@ -60,7 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       return CustomTextField(
                           controller: null,
                           hint: 'Email',
-                          prefix: Icon(Icons.account_circle),
+                          prefix:
+                              Icon(Icons.account_circle, color: Colors.black),
                           suffix: null,
                           obscure: false,
                           textInputType: TextInputType.emailAddress,
@@ -76,11 +77,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       return CustomTextField(
                           controller: null,
                           hint: 'Senha',
-                          prefix: Icon(Icons.lock),
+                          prefix: Icon(
+                            Icons.lock,
+                            color: Colors.black,
+                          ),
                           suffix: IconButton(
                             icon: loginStore.passwordVisible
-                                ? Icon(Icons.visibility_off)
-                                : Icon(Icons.visibility),
+                                ? Icon(
+                                    Icons.visibility_off,
+                                    color: Colors.grey,
+                                  )
+                                : Icon(
+                                    Icons.visibility,
+                                    color: Colors.black,
+                                  ),
                             onPressed: loginStore.togglePasswordVisibility,
                           ),
                           obscure: !loginStore.passwordVisible,
@@ -102,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       AlwaysStoppedAnimation(Colors.white),
                                 )
                               : Text('Login'),
-                          style: ElevatedButton.styleFrom(),
+                          style:
+                              ElevatedButton.styleFrom(primary: Colors.black),
                           onPressed: loginStore.isFormValid
                               ? () {
                                   loginStore.doLogin();

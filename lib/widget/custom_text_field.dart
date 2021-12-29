@@ -36,10 +36,11 @@ class CustomTextField extends StatelessWidget {
         onChanged: onChanged,
         enabled: enable,
         decoration: InputDecoration(
-            hintText: hint,
-            border: InputBorder.none,
-            prefixIcon: prefix,
-            suffixIcon: suffix),
+          hintText: hint,
+          border: InputBorder.none,
+          prefixIcon: prefix,
+          suffixIcon: suffix,
+        ),
         textAlignVertical: TextAlignVertical.center,
       ),
     );

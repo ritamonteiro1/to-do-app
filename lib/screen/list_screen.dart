@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:to_do_app/store/list_store.dart';
 import 'package:to_do_app/widget/custom_text_field.dart';
 import 'package:to_do_app/screen/login_screen.dart';
@@ -61,33 +62,44 @@ class _ListScreenState extends State<ListScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        CustomTextField(
-                            controller: null,
-                            hint: 'Tarefa',
-                            prefix: null,
-                            suffix: IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {},
-                            ),
-                            obscure: false,
-                            textInputType: TextInputType.text,
-                            onChanged: listStore.setNewToDoTitle,
-                            enable: null),
+                        Observer(
+                          builder: (_) {
+                            return CustomTextField(
+                                controller: null,
+                                hint: 'Tarefa',
+                                prefix: null,
+                                suffix: listStore.isFormValid
+                                    ? IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () {},
+                                      )
+                                    : null,
+                                obscure: false,
+                                textInputType: TextInputType.text,
+                                onChanged: listStore.setNewToDoTitle,
+                                enable: null);
+                          },
+                        ),
                         const SizedBox(
                           height: 8,
                         ),
                         Expanded(
-                            child: ListView.separated(
-                                itemBuilder: (_, index) {
-                                  return ListTile(
-                                    title: Text('Item $index'),
-                                    onTap: () {},
-                                  );
-                                },
-                                separatorBuilder: (_, __) {
-                                  return Divider();
-                                },
-                                itemCount: 10))
+                          child: Observer(
+                            builder: (_) {
+                              return ListView.separated(
+                                  itemBuilder: (_, index) {
+                                    return ListTile(
+                                      title: Text(listStore.toDoList[index]),
+                                      onTap: () {},
+                                    );
+                                  },
+                                  separatorBuilder: (_, __) {
+                                    return Divider();
+                                  },
+                                  itemCount: listStore.toDoList.length);
+                            },
+                          ),
+                        )
                       ],
                     ),
                   ),
