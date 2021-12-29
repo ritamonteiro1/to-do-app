@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:to_do_app/screen/list_screen.dart';
 import 'package:to_do_app/store/login_store.dart';
 import 'package:to_do_app/widget/custom_text_field.dart';
-import 'package:to_do_app/screen/list_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,7 +13,31 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginStore loginStore = LoginStore();
+  late LoginStore loginStore;
+  late ReactionDisposer disposer;
+
+  @override
+  void initState() {
+    loginStore = LoginStore();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    disposer = reaction((_) => loginStore.loggedIn, (loggedIn) {
+      if (loggedIn != null && loggedIn == true) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => ListScreen()));
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +55,19 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomTextField(
-                      controller: null,
-                      hint: 'Email',
-                      prefix: Icon(Icons.account_circle),
-                      suffix: null,
-                      obscure: false,
-                      textInputType: TextInputType.emailAddress,
-                      onChanged: loginStore.setEmail,
-                      enable: null),
+                  Observer(
+                    builder: (_) {
+                      return CustomTextField(
+                          controller: null,
+                          hint: 'Email',
+                          prefix: Icon(Icons.account_circle),
+                          suffix: null,
+                          obscure: false,
+                          textInputType: TextInputType.emailAddress,
+                          onChanged: loginStore.setEmail,
+                          enable: !loginStore.loading);
+                    },
+                  ),
                   const SizedBox(
                     height: 16,
                   ),
@@ -57,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscure: !loginStore.passwordVisible,
                           textInputType: TextInputType.visiblePassword,
                           onChanged: loginStore.setPassword,
-                          enable: null);
+                          enable: !loginStore.loading);
                     },
                   ),
                   const SizedBox(
@@ -66,22 +95,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   Observer(builder: (_) {
                     return SizedBox(
                       height: 44,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(32)),
-                        child: Text('Login'),
-                        color: Theme.of(context).primaryColor,
-                        disabledColor:
-                            Theme.of(context).primaryColor.withAlpha(100),
-                        textColor: Colors.white,
-                        onPressed: loginStore.isFormValid
-                            ? () {
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => ListScreen()));
-                              }
-                            : null,
-                      ),
+                      child: ElevatedButton(
+                          child: loginStore.loading
+                              ? CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.white),
+                                )
+                              : Text('Login'),
+                          style: ElevatedButton.styleFrom(),
+                          onPressed: loginStore.isFormValid
+                              ? () {
+                                  loginStore.doLogin();
+                                }
+                              : null),
                     );
                   }),
                 ],

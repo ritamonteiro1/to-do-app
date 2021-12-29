@@ -5,12 +5,6 @@ part 'login_store.g.dart';
 class LoginStore = _LoginStore with _$LoginStore;
 
 abstract class _LoginStore with Store {
-  _LoginStore() {
-    autorun((_) {
-      print(isFormValid);
-    });
-  }
-
   @observable
   String email = '';
 
@@ -22,6 +16,9 @@ abstract class _LoginStore with Store {
 
   @observable
   bool loading = false;
+
+  @observable
+  bool loggedIn = false;
 
   @action
   void setEmail(String value) => email = value;
@@ -37,6 +34,7 @@ abstract class _LoginStore with Store {
     loading = true;
     await Future.delayed(Duration(seconds: 2));
     loading = false;
+    loggedIn = true;
   }
 
   @computed
