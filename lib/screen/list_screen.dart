@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/store/list_store.dart';
 import 'package:to_do_app/widget/custom_text_field.dart';
 import 'package:to_do_app/screen/login_screen.dart';
 
@@ -10,6 +11,14 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+  late ListStore listStore;
+
+  @override
+  void initState() {
+    listStore = ListStore();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,13 +37,13 @@ class _ListScreenState extends State<ListScreen> {
                     Text(
                       'Tarefas',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.w900,
                           fontSize: 32),
                     ),
                     IconButton(
                       icon: Icon(Icons.exit_to_app),
-                      color: Colors.white,
+                      color: Colors.black,
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => LoginScreen()));
@@ -52,15 +61,18 @@ class _ListScreenState extends State<ListScreen> {
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        // CustomTextField(
-                        //     controller: controller,
-                        //     hint: hint,
-                        //     prefix: prefix,
-                        //     suffix: suffix,
-                        //     obscure: obscure,
-                        //     textInputType: textInputType,
-                        //     onChanged: onChanged,
-                        //     enable: enable),
+                        CustomTextField(
+                            controller: null,
+                            hint: 'Tarefa',
+                            prefix: null,
+                            suffix: IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {},
+                            ),
+                            obscure: false,
+                            textInputType: TextInputType.text,
+                            onChanged: listStore.setNewToDoTitle,
+                            enable: null),
                         const SizedBox(
                           height: 8,
                         ),
